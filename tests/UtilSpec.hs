@@ -1,8 +1,8 @@
-module WorldSpec where
+module UtilSpec where
 
 import Data.List
 import Test.Hspec
-import World
+import Util
 
 spec :: Spec
 spec = do

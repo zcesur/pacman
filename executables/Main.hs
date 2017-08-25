@@ -1,7 +1,14 @@
 module Main where
 
 import Graphics.Gloss
-import World
+
+import Data.Char (toUpper)
+
+import World 
+import Animation (step)
+import Event (handleKeys)
+import Rendering (render, unitRadius)
+import Util (Direction (..))
 
 windowPosition :: (Int, Int)
 windowPosition = (100, 100)
@@ -15,13 +22,12 @@ window = InWindow "Pacman" (width, height) windowPosition
 background :: Color
 background = black
 
-drawing :: Picture
-drawing = pictures
-  [ translate 0 0 $ color pacmanColor $ circleSolid unitRadius
-  , wallsRendered
-  ]
-  where
-    pacmanColor = yellow
+fps :: Int
+fps = 60
+
+initialState :: GameState
+initialState = Game { pacmanLoc = (0, 0)
+                    , pacmanDir = R }
 
 main :: IO ()
-main = display window background drawing 
+main = play window background fps initialState render handleKeys step
