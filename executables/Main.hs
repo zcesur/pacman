@@ -30,4 +30,8 @@ initialState = Game { pacmanLoc = (0, 0)
                     , pacmanDir = R }
 
 main :: IO ()
-main = play window background fps initialState renderWorld handleKeys step
+main = do
+    renderWorld' <- renderWorld <$> walls
+    step' <- step <$> walls
+    play window background fps initialState renderWorld' handleKeys step'
+  where walls = map read <$> lines <$> readFile "assets/map001"

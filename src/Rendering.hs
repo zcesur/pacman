@@ -25,10 +25,7 @@ renderDynamic game =
   where
     pacmanCol = color yellow
 
-prerendered :: Picture
-prerendered = renderStatic walls
-
-renderWorld :: GameState -> Picture
-renderWorld game = pictures [ prerendered
-                            , renderDynamic game
-                            ]
+renderWorld :: [Box] -> GameState -> Picture
+renderWorld walls game = pictures [ renderStatic walls
+                                  , renderDynamic game
+                                  ]

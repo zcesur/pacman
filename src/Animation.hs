@@ -6,8 +6,8 @@ import World
 import Event
 import Util
 
-step :: Float -> GameState -> GameState
-step seconds = handleWallCollision . move seconds
+step :: [Box] -> Float -> GameState -> GameState
+step walls seconds = handleWallCollision walls . move seconds
 
 move :: Float -> GameState -> GameState
 move seconds game = game { pacmanLoc = (x', y') }

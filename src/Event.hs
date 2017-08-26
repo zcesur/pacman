@@ -23,8 +23,8 @@ handleKeys _ game = game
 collision :: Box -> Box -> Bool
 collision (x1, y1) (x2, y2) = abs (x1-x2) < 1 && abs (y1-y2) < 1 
 
-handleWallCollision :: GameState -> GameState
-handleWallCollision game = game { pacmanLoc = loc' }
+handleWallCollision :: [Box] -> GameState -> GameState
+handleWallCollision walls game = game { pacmanLoc = loc' }
   where
     loc = pacmanLoc game
     dir = pacmanDir game
