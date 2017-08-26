@@ -9,26 +9,26 @@ import Util
 unitRadius :: Float
 unitRadius = 10
 
-toCoords :: Point -> Point
-toCoords = mulSV (2*unitRadius)
+translatePic :: Point -> Picture -> Picture
+translatePic = uncurry translate . (mulSV (2*unitRadius))
 
 renderStatic :: [Box] -> Picture
 renderStatic walls = 
-    pictures $ map (($ block) . uncurry translate . toCoords) walls
+    pictures $ map (($ block) . translatePic) walls
   where
     block =  color (dark blue) $ rectangleWire (2*r) (2*r)
     r = unitRadius
 
 renderDynamic :: GameState -> Picture
 renderDynamic game =
-    pictures [(uncurry translate . toCoords) (pacmanLoc game) $ pacmanCol $ circleSolid unitRadius]
+    pictures [translatePic (pacmanLoc game) $ pacmanCol $ circleSolid unitRadius]
   where
     pacmanCol = color yellow
 
 prerendered :: Picture
 prerendered = renderStatic walls
 
-render :: GameState -> Picture
-render game = pictures [ prerendered
-                       , renderDynamic game
-                       ]
+renderWorld :: GameState -> Picture
+renderWorld game = pictures [ prerendered
+                            , renderDynamic game
+                            ]

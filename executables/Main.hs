@@ -7,7 +7,7 @@ import Data.Char (toUpper)
 import World 
 import Animation (step)
 import Event (handleKeys)
-import Rendering (render, unitRadius)
+import Rendering (renderWorld, unitRadius)
 import Util (Direction (..))
 
 windowPosition :: (Int, Int)
@@ -30,4 +30,4 @@ initialState = Game { pacmanLoc = (0, 0)
                     , pacmanDir = R }
 
 main :: IO ()
-main = play window background fps initialState render handleKeys step
+main = play window background fps initialState renderWorld handleKeys step

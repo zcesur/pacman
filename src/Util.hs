@@ -20,6 +20,17 @@ makeGrid (nb1, nb2) = [(x,y) | x <- xs, y <- ys]
     xs = let bnd = fromIntegral $ nb1 `div` 2 in [-bnd..bnd]
     ys = let bnd = fromIntegral $ nb2 `div` 2 in [-bnd..bnd]
 
-ptInBox :: Point -> Box -> Bool
-ptInBox (x1,y1) (x2,y2) = y2 - 0.5 < y1 && y1 < y2 + 0.5 &&
-                          x2 - 0.5 < x1 && x1 < x2 + 0.5
+boxInFront :: Box -> Direction -> Box
+boxInFront (x, y) L = (ceiling' (x-1), round' y)
+boxInFront (x, y) R = (floor' (x+1), round' y)
+boxInFront (x, y) U = (round' x, floor' (y+1))
+boxInFront (x, y) D = (round' x, ceiling' (y-1))
+
+ceiling' :: (RealFrac a) => a -> Float
+ceiling' = fromIntegral . ceiling
+
+floor' :: (RealFrac a) => a -> Float
+floor' = fromIntegral . floor
+
+round' :: (RealFrac a) => a -> Float
+round' = fromIntegral . round
