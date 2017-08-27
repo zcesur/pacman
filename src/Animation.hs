@@ -1,10 +1,8 @@
 module Animation where
 
-import Graphics.Gloss.Data.Vector
-
-import World
 import Event
 import Util
+import Types
 
 step :: [Box] -> Float -> GameState -> GameState
 step walls seconds = handleWallCollision walls . move seconds

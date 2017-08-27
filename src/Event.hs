@@ -2,21 +2,19 @@ module Event where
 
 import Graphics.Gloss.Interface.Pure.Game
 
-import World
+import Types
 import Util
 
 handleKeys :: Event -> GameState -> GameState
-handleKeys (EventKey (Char '0') _ _ _) game =
-  game { pacmanLoc = (0, 0) }
-
 handleKeys (EventKey (Char c) _ _ _) game
+    | c == '0'            = game { pacmanLoc = (0, 0) }
     | c `elem` ['h', 'a'] = turn L
     | c `elem` ['l', 'd'] = turn R
     | c `elem` ['k', 'w'] = turn U
     | c `elem` ['j', 's'] = turn D
+    | otherwise           = game
   where
     turn dir = game { pacmanDir = dir }
-
 handleKeys _ game = game
 
 -- | Check if two boxes are overlapping

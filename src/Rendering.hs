@@ -1,9 +1,8 @@
 module Rendering where
 
 import Graphics.Gloss
-import Graphics.Gloss.Data.Vector
 
-import World
+import Types
 import Util
 
 unitRadius :: Float

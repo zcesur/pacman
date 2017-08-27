@@ -1,31 +1,13 @@
 module World where
 
-import Graphics.Gloss
+mkGrid :: (Int, Int) -> [(Float, Float)]
+mkGrid (nb1, nb2) = [(x,y) | x <- xs, y <- ys]
+  where
+    xs = let bnd = fromIntegral $ nb1 `div` 2 in [-bnd..bnd]
+    ys = let bnd = fromIntegral $ nb2 `div` 2 in [-bnd..bnd]
 
-import Data.List
-
-import Util
-
-numBlocks :: (Int, Int)
-numBlocks = (13, 13)
-
-grid :: [Box]
-grid = makeGrid numBlocks
-
-outerWalls :: [Box]
-outerWalls = [pt | pt <- grid, fst pt `elem` fst bds || snd pt `elem` snd bds]
+mkWalls :: (Int, Int) -> [(Float, Float)]
+mkWalls nBlocks = [pt | pt <- grid, fst pt `elem` fst bds || snd pt `elem` snd bds]
   where
     bds = splitAt 2 $ map ($ grid) $ (.) <$> [fst, snd] <*> [maximum, minimum]
-
-innerWalls :: [Box]
-innerWalls = [pt | pt <- makeGrid (9, 9), fst pt `elem` fst bds || snd pt `elem` snd bds]
-  where
-    bds = splitAt 2 $ map ($ makeGrid (9, 9)) $ (.) <$> [fst, snd] <*> [maximum, minimum]
-
-walls :: [Box]
-walls = (outerWalls ++ innerWalls) \\ [(-4, 0), (4, 0), (0, -4), (0, 4)]
-
-data GameState = Game
-    { pacmanLoc :: Point
-    , pacmanDir :: Direction
-    }
+    grid = mkGrid nBlocks

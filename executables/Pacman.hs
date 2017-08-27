@@ -4,20 +4,21 @@ import Graphics.Gloss
 
 import Data.Char (toUpper)
 
-import World 
 import Animation (step)
 import Event (handleKeys)
 import Rendering (renderWorld, unitRadius)
-import Util (Direction (..))
+import Types
+import Util
 
 windowPosition :: (Int, Int)
 windowPosition = (100, 100)
 
-window :: Display
-window = InWindow "Pacman" (width, height) windowPosition
+window :: [Box] -> Display
+window walls = InWindow "Pacman" (width, height) windowPosition
   where
-    width = 2 * round unitRadius * fst numBlocks
-    height = 2 * round unitRadius * snd numBlocks
+    width = 2 * round unitRadius * round (fst nBlocks)
+    height = 2 * round unitRadius * round (snd nBlocks)
+    nBlocks = 1 `addSV` (maximum walls) `subVV` (minimum walls)
 
 background :: Color
 background = black
@@ -31,7 +32,8 @@ initialState = Game { pacmanLoc = (0, 0)
 
 main :: IO ()
 main = do
+    window' <- window <$> walls 
     renderWorld' <- renderWorld <$> walls
     step' <- step <$> walls
-    play window background fps initialState renderWorld' handleKeys step'
+    play window' background fps initialState renderWorld' handleKeys step'
   where walls = map read <$> lines <$> readFile "assets/map001"
