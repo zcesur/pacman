@@ -5,33 +5,29 @@ import Graphics.Gloss.Interface.Pure.Game
 import Types
 import Util
 
-handleKeys :: Event -> GameState -> GameState
-handleKeys (EventKey (Char c) _ _ _) game
-    | c == '0'            = game { pacmanLoc = (0, 0) }
+handleKeys :: Event -> [Agent] -> [Agent]
+handleKeys (EventKey (Char c) _ _ _) (p:gs)
+    | c == '0'            = (p { position = (0, 0) }):gs
     | c `elem` ['h', 'a'] = turn L
     | c `elem` ['l', 'd'] = turn R
     | c `elem` ['k', 'w'] = turn U
     | c `elem` ['j', 's'] = turn D
-    | otherwise           = game
+    | otherwise           = (p:gs)
   where
-    turn dir = game { pacmanDir = dir }
-handleKeys _ game = game
+    turn dir = (p { direction = dir }):gs
+handleKeys _ as = as
 
--- | Check if two boxes are overlapping
-collision :: Box -> Box -> Bool
-collision (x1, y1) (x2, y2) = abs (x1-x2) < 1 && abs (y1-y2) < 1 
+handleWallCollision :: [Box] -> Agent -> Agent
+handleWallCollision walls a = a { position = pos' }
+  where  
+    pos = position a
+    dir = direction a
 
-handleWallCollision :: [Box] -> GameState -> GameState
-handleWallCollision walls game = game { pacmanLoc = loc' }
-  where
-    loc = pacmanLoc game
-    dir = pacmanDir game
-
-    loc'
-        | null $ filter (collision loc) walls = loc
-        | boxAhead `elem` walls               = pushback loc dir boxAhead
-        | otherwise                           = relocate loc dir boxAhead
-      where boxAhead = boxInFront loc dir
+    pos'
+        | null $ filter (collision pos) walls = pos
+        | boxAhead `elem` walls               = pushback pos dir boxAhead
+        | otherwise                           = relocate pos dir boxAhead
+      where boxAhead = boxInFrontOf pos dir
 
     pushback :: Box -> Direction -> Box -> Box
     pushback (x1, y1) d (x2, y2) =

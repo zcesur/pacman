@@ -18,13 +18,14 @@ renderStatic walls =
     block =  color (dark blue) $ rectangleWire (2*r) (2*r)
     r = unitRadius
 
-renderDynamic :: GameState -> Picture
-renderDynamic game =
-    pictures [translatePic (pacmanLoc game) $ pacmanCol $ circleSolid unitRadius]
+renderDynamic :: [Agent] -> Picture
+renderDynamic as = pictures $ map f as
   where
-    pacmanCol = color yellow
+    f a = case species a of
+        Pacperson -> translatePic (position a) $ color yellow $ circleSolid unitRadius
+        Ghost -> translatePic (position a) $ color blue $ circleSolid unitRadius
 
-renderWorld :: [Box] -> GameState -> Picture
-renderWorld walls game = pictures [ renderStatic walls
-                                  , renderDynamic game
-                                  ]
+renderWorld :: [Box] -> [Agent] -> Picture
+renderWorld walls as = pictures [ renderStatic walls
+                                , renderDynamic as
+                                ]

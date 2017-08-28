@@ -26,9 +26,18 @@ background = black
 fps :: Int
 fps = 60
 
-initialState :: GameState
-initialState = Game { pacmanLoc = (0, 0)
-                    , pacmanDir = R }
+initialState :: [Agent]
+initialState = pacman:clyde:[]
+  where
+    pacman = Agent { species = Pacperson
+                   , position = (0, 0)
+                   , direction = R
+                   , velocity = 5 }
+
+    clyde = Agent { species = Ghost
+                  , position = (0, 0)
+                  , direction = L
+                  , velocity = 5 }
 
 main :: IO ()
 main = do
