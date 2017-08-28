@@ -8,11 +8,12 @@ data Agent = Agent
     { species :: Species
     , position :: Point
     , direction :: Direction
+    , bufferedDirection :: Direction
     , velocity :: Velocity
     }
 
 
-data Direction = L | R | U | D
+data Direction = L | R | U | D deriving Eq
 
 type Velocity = Float
 type Box = Point

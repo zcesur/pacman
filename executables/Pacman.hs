@@ -32,11 +32,13 @@ initialState = pacman:clyde:[]
     pacman = Agent { species = Pacperson
                    , position = (0, 0)
                    , direction = R
+                   , bufferedDirection = R
                    , velocity = 5 }
 
     clyde = Agent { species = Ghost
                   , position = (0, 0)
                   , direction = L
+                  , bufferedDirection = L
                   , velocity = 5 }
 
 main :: IO ()
