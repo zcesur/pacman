@@ -1,5 +1,8 @@
 module Animation where
 
+import System.Random
+import Data.List
+
 import Event
 import Util
 import Types
@@ -9,7 +12,7 @@ step walls seconds = map fs
   where
     fs = handleWallCollision walls
        . updatePosition seconds
-       . turn walls 0.0000001
+       . turn walls 0.001
 
 updatePosition :: Float -> Agent -> Agent
 updatePosition seconds agent = agent { position = (x', y') }
@@ -22,16 +25,36 @@ updatePosition seconds agent = agent { position = (x', y') }
 
 turn :: [Box] -> Float -> Agent -> Agent
 turn walls tolerance a
-    | direction a == dir = a
-    | canTurn            = a { position = relocate (x, y) dir (x', y')
-                             , direction = dir }
-    | otherwise          = a
+    | dir == bufDir = a
+    | canTurn       = a' 
+    | otherwise     = a
   where
-    canTurn = not ((x', y') `elem` walls) && case dir of
-        L -> abs (x-x') < 1 + tolerance
-        R -> abs (x-x') < 1 + tolerance
-        U -> abs (y-y') < 1 + tolerance
-        D -> abs (y-y') < 1 + tolerance
-    dir = bufferedDirection a
-    (x, y) = position a
-    (x', y') = boxInFrontOf (x, y) dir
+    a' = case species a of
+        Pacperson -> a { position = pos'
+                       , direction = bufDir
+                       , lastCrossroads = pos'
+                       }
+
+        Ghost -> a { position = pos'
+                   , direction = bufDir
+                   , lastCrossroads = pos'
+                   , bufferedDirection = bufDir'
+                   , seed = seed'
+                   }
+
+    canTurn =
+        not (boxAhead `elem` walls) &&
+        not (pos' == lastCrossroads a) &&
+        case bufDir of
+            L -> abs (x-x') < 1 + tolerance && abs (y-y') < tolerance
+            R -> abs (x-x') < 1 + tolerance && abs (y-y') < tolerance
+            U -> abs (y-y') < 1 + tolerance && abs (x-x') < tolerance
+            D -> abs (y-y') < 1 + tolerance && abs (x-x') < tolerance
+
+    dir = direction a
+    bufDir = bufferedDirection a
+    pos@(x, y) = position a
+    pos' = relocate pos bufDir boxAhead
+    boxAhead@(x', y') = boxInFrontOf (x, y) bufDir
+
+    (bufDir', seed') = randomL (allDirections \\ [bufDir, neg bufDir]) (seed a)

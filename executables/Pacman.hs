@@ -3,6 +3,7 @@ module Main where
 import Graphics.Gloss
 
 import Data.Char (toUpper)
+import System.Random
 
 import Animation (step)
 import Event (handleKeys)
@@ -30,16 +31,22 @@ initialState :: [Agent]
 initialState = pacman:clyde:[]
   where
     pacman = Agent { species = Pacperson
-                   , position = (0, 0)
+                   , position = (5, 5)
+                   , lastCrossroads = (0, 0)
                    , direction = R
                    , bufferedDirection = R
-                   , velocity = 5 }
+                   , velocity = 5
+                   , seed = mkStdGen 0
+                   }
 
     clyde = Agent { species = Ghost
-                  , position = (0, 0)
-                  , direction = L
-                  , bufferedDirection = L
-                  , velocity = 5 }
+                  , position = ((-5), (-5))
+                  , lastCrossroads = (0, 0)
+                  , direction = U
+                  , bufferedDirection = R
+                  , velocity = 5
+                  , seed = mkStdGen 4
+                  }
 
 main :: IO ()
 main = do

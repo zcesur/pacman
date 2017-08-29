@@ -2,6 +2,8 @@ module Event where
 
 import Graphics.Gloss.Interface.Pure.Game
 
+import System.Random
+
 import Types
 import Util
 
@@ -18,16 +20,29 @@ handleKeys (EventKey (Char c) _ _ _) (p:gs)
 handleKeys _ as = as
 
 handleWallCollision :: [Box] -> Agent -> Agent
-handleWallCollision walls a = a { position = pos' }
+handleWallCollision walls a = case species a of
+    Pacperson -> a { position = pos' }
+    Ghost -> a { position = pos' 
+               , bufferedDirection = bufDir'
+               , seed = seed' 
+               }
   where  
     pos = position a
     dir = direction a
+    bufDir = bufferedDirection a
+    boxAhead = boxInFrontOf pos dir
 
     pos'
         | null $ filter (collision pos) walls = pos
         | boxAhead `elem` walls               = pushback pos dir boxAhead
         | otherwise                           = relocate pos dir boxAhead
-      where boxAhead = boxInFrontOf pos dir
+
+    (bufDir', seed')
+        | boxAhead `elem` walls = randomL candidates (seed a)
+        | otherwise             = (bufDir, seed a)
+
+    candidates = let f = (\x -> not $ boxInFrontOf pos' x `elem` walls)
+                 in filter f allDirections
 
 pushback :: Box -> Direction -> Box -> Box
 pushback (x1, y1) d (x2, y2) =
