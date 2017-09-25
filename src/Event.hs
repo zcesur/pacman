@@ -19,6 +19,18 @@ handleKeys (EventKey (Char c) _ _ _) (p:gs)
     buffer dir = (p { bufferedDirection = dir }):gs
 handleKeys _ as = as
 
+handleGhostCollision :: [Agent] -> Agent -> Agent
+handleGhostCollision gs a
+    | not ghostCollision = a
+    | otherwise          =
+        case species a of
+            Pacperson -> a { alive = False }
+            Ghost     -> a
+  where
+    ghostCollision = any (collision (position a))
+                   . map position
+                   . filter ((name a /=) . name) $ gs
+
 handleWallCollision :: [Box] -> Agent -> Agent
 handleWallCollision walls a = case species a of
     Pacperson -> a { position = pos' }

@@ -8,9 +8,10 @@ import Util
 import Types
 
 step :: [Box] -> Float -> [Agent] -> [Agent]
-step walls seconds = map fs
+step walls seconds (p:gs) = map fs (p:gs)
   where
     fs = handleWallCollision walls
+       . handleGhostCollision gs
        . updatePosition seconds
        . turn walls 0.001
 

@@ -21,9 +21,14 @@ renderStatic walls =
 renderDynamic :: [Agent] -> Picture
 renderDynamic as = pictures $ map f as
   where
-    f a = case species a of
-        Pacperson -> translatePic (position a) $ color yellow $ circleSolid unitRadius
-        Ghost -> translatePic (position a) $ color blue $ circleSolid unitRadius
+    f a = translatePic (position a) $ color (col a) $ circleSolid unitRadius
+    col a = case name a of
+        Pacman -> if alive a then yellow else white
+        Blinky -> red
+        Inky -> cyan
+        Pinky -> light red
+        Clyde -> orange
+
 
 renderWorld :: [Box] -> [Agent] -> Picture
 renderWorld walls as = pictures [ renderStatic walls

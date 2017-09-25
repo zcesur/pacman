@@ -28,7 +28,7 @@ fps :: Int
 fps = 60
 
 initialState :: [Agent]
-initialState = pacman:clyde:[]
+initialState = pacman:clyde:blinky:[]
   where
     pacman = Agent { species = Pacperson
                    , position = (5, 5)
@@ -37,16 +37,31 @@ initialState = pacman:clyde:[]
                    , bufferedDirection = R
                    , velocity = 5
                    , seed = mkStdGen 0
+                   , alive = True
+                   , name = Pacman
                    }
 
     clyde = Agent { species = Ghost
-                  , position = ((-5), (-5))
+                  , position = (5, -5)
                   , lastCrossroads = (0, 0)
                   , direction = U
                   , bufferedDirection = R
                   , velocity = 5
                   , seed = mkStdGen 4
+                  , alive = True
+                  , name = Clyde
                   }
+
+    blinky = Agent { species = Ghost
+                   , position = (-5, 5)
+                   , lastCrossroads = (0, 0)
+                   , direction = U
+                   , bufferedDirection = R
+                   , velocity = 5
+                   , seed = mkStdGen 42
+                   , alive = True
+                   , name = Blinky
+                   }
 
 main :: IO ()
 main = do

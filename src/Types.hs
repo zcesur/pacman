@@ -13,8 +13,11 @@ data Agent = Agent
     , bufferedDirection :: Direction
     , velocity :: Velocity
     , seed :: StdGen
+    , alive :: Bool
+    , name :: Name
     }
 
+data Name = Pacman | Blinky | Inky | Pinky | Clyde deriving Eq
 
 data Direction = L | R | U | D deriving (Eq, Show, Bounded, Enum)
 
