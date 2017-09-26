@@ -15,7 +15,7 @@ renderStatic :: [Box] -> Picture
 renderStatic walls = 
     pictures $ map (($ block) . translatePic) walls
   where
-    block =  color (dark blue) $ rectangleWire (2*r) (2*r)
+    block = color (dark blue) $ rectangleWire (2*r) (2*r)
     r = unitRadius
 
 renderDynamic :: [Agent] -> Picture

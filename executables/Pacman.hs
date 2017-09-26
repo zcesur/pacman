@@ -11,15 +11,8 @@ import Rendering (renderWorld, unitRadius)
 import Types
 import Util
 
-windowPosition :: (Int, Int)
-windowPosition = (100, 100)
-
-window :: [Box] -> Display
-window walls = InWindow "Pacman" (width, height) windowPosition
-  where
-    width = 2 * round unitRadius * round (fst nBlocks)
-    height = 2 * round unitRadius * round (snd nBlocks)
-    nBlocks = 1 `addSV` (maximum walls) `subVV` (minimum walls)
+window :: Display
+window = FullScreen
 
 background :: Color
 background = black
@@ -28,21 +21,54 @@ fps :: Int
 fps = 60
 
 initialState :: [Agent]
-initialState = pacman:clyde:blinky:[]
+initialState = pacman:blinky:inky:pinky:clyde:[]
   where
     pacman = Agent { species = Pacperson
-                   , position = (5, 5)
+                   , position = (0, -5)
                    , lastCrossroads = (0, 0)
-                   , direction = R
-                   , bufferedDirection = R
+                   , direction = L
+                   , bufferedDirection = L
                    , velocity = 5
                    , seed = mkStdGen 0
                    , alive = True
                    , name = Pacman
                    }
 
+    blinky = Agent { species = Ghost
+                   , position = (0, 3)
+                   , lastCrossroads = (0, 0)
+                   , direction = U
+                   , bufferedDirection = R
+                   , velocity = 5
+                   , seed = mkStdGen 1
+                   , alive = True
+                   , name = Blinky
+                   }
+    
+    inky = Agent { species = Ghost
+                 , position = (-1, 1)
+                 , lastCrossroads = (0, 0)
+                 , direction = U
+                 , bufferedDirection = R
+                 , velocity = 5
+                 , seed = mkStdGen 2
+                 , alive = True
+                 , name = Inky
+                 }
+   
+    pinky = Agent { species = Ghost
+                  , position = (0, 1)
+                  , lastCrossroads = (0, 0)
+                  , direction = U
+                  , bufferedDirection = R
+                  , velocity = 5
+                  , seed = mkStdGen 3
+                  , alive = True
+                  , name = Pinky
+                  }
+    
     clyde = Agent { species = Ghost
-                  , position = (5, -5)
+                  , position = (1, 1)
                   , lastCrossroads = (0, 0)
                   , direction = U
                   , bufferedDirection = R
@@ -50,23 +76,11 @@ initialState = pacman:clyde:blinky:[]
                   , seed = mkStdGen 4
                   , alive = True
                   , name = Clyde
-                  }
-
-    blinky = Agent { species = Ghost
-                   , position = (-5, 5)
-                   , lastCrossroads = (0, 0)
-                   , direction = U
-                   , bufferedDirection = R
-                   , velocity = 5
-                   , seed = mkStdGen 42
-                   , alive = True
-                   , name = Blinky
-                   }
+                  }  
 
 main :: IO ()
 main = do
-    window' <- window <$> walls 
     renderWorld' <- renderWorld <$> walls
     step' <- step <$> walls
-    play window' background fps initialState renderWorld' handleKeys step'
-  where walls = map read <$> lines <$> readFile "assets/map001"
+    play window background fps initialState renderWorld' handleKeys step'
+  where walls = map read <$> lines <$> readFile "assets/classic"
